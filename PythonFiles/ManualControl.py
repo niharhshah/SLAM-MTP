@@ -19,12 +19,22 @@ def encoder_test():
     print("This will move robot please confirm we are clear to move")
     if(raw_input("[y/n]").lower()=="y"):
         print("encoder_test")
-def left():
+        #here
+
+def left(speed):
+    if(speed > 127 or speed < 0):
+        raise ValueError
+    rc.TurnLeftMixed(address,speed)
     print("Left")
-def right():
+def right(speed):
+    if(speed > 127 or speed < 0):
+        raise ValueError
+    rc.TurnRightMixed(address,speed);
     print("Right")
 def stop():
+    rc.ForwardMixed(address,0)
     print("stopped")
+speed = 0
 #----------------Main Function -------------------#
 print("#########################")
 print("Manual Control on jetson nano")
@@ -53,10 +63,13 @@ while 1:
         if(r_char[0] == "E"):
             encoder_test()
         if(r_char[0] == "L"):
-            left();
+            speed = int(r_char[1:])
+            left(speed);
         if(r_char[0] == "R"):
-            right()
- 
+            speed = int(r_char[1:])
+            right(speed)
+        if(r_char[0] == "S"):
+            stop()
  #-------------Exception Handling-------------------#   
     except KeyboardInterrupt:
         print("\nExiting....")
