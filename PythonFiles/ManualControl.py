@@ -1,10 +1,15 @@
 from roboclaw import Roboclaw
+from time import sleep
 address = 0x80
 debug = 0
 rc = Roboclaw("/dev/ttyACM0",115200)
 rc.Open()
 
 #------------------Functions----------------------
+# def delay(val=1000):
+#     for i in range(0,val):
+#         pass
+	 
 def ForwardFunction(speed):
     if(speed > 127 or speed < 0):
         raise ValueError
@@ -19,7 +24,31 @@ def encoder_test():
     print("This will move robot please confirm we are clear to move")
     if(raw_input("[y/n]").lower()=="y"):
         print("encoder_test")
-        #here
+        #move motor forward for some time
+        rc.SetEncM1(address,0)
+        rc.SetEncM2(address,0)
+        rc.ForwardMixed(address,64)
+        # delay(d_val)
+        sleep(1)
+        rc.ForwardMixed(address,0)
+        # stop()
+        en1=rc.ReadEncM1(address)
+        en2=rc.ReadEncM2(address)
+        print("forward: enc1={}; enc2={}".format(en1,en2))
+        rc.BackwardMixed(address,64)
+        # delay(2*d_val)
+        sleep(2)
+        rc.ForwardMixed(address,0)
+        # stop()
+        en3=rc.ReadEncM1(address)
+        en4=rc.ReadEncM2(address)
+        print("backward: enc1={}; enc2={}".format(en3,en4))
+        if(en1*en3<0 and en2*en4<0 and en3*en4>0 and en2*en1>0):
+            print("encoder test done---working fine")
+            # return True
+        else:
+    	    print("Error in directions of the motor , please reconnect the wires and tune again!!!")
+            raise ValueError
 
 def left(speed):
     if(speed > 127 or speed < 0):
@@ -29,7 +58,7 @@ def left(speed):
 def right(speed):
     if(speed > 127 or speed < 0):
         raise ValueError
-    rc.TurnRightMixed(address,speed);
+    rc.TurnRightMixed(address,speed)
     print("Right")
 def stop():
     rc.ForwardMixed(address,0)
@@ -64,7 +93,7 @@ while 1:
             encoder_test()
         if(r_char[0] == "L"):
             speed = int(r_char[1:])
-            left(speed);
+            left(speed)
         if(r_char[0] == "R"):
             speed = int(r_char[1:])
             right(speed)
