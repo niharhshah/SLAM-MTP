@@ -1,0 +1,8 @@
+asposestorage==1.0.2
+config==0.5.1
+matplotlib==3.4.2
+numpy==1.19.2
+opencv_contrib_python==4.5.4.60
+Pillow==9.0.0
+torch==1.10.0+cu113
+utils==1.0.1
